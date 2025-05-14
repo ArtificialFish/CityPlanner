@@ -1,6 +1,7 @@
 import pygame as pg
 from .settings import TILE_SIZE
-from .utils import draw_text
+
+# from .utils import draw_text
 from .utils import scale_image
 
 
@@ -41,6 +42,7 @@ class World:
         y = grid_pos[1]
 
         if hud_select:
+
             if self.can_place_tile(grid_pos):
                 img = hud_select["image"].copy()
                 img.set_alpha(100)
@@ -58,6 +60,10 @@ class World:
 
                 if hud_select["name"] == "delete":
                     if mouse_action[0] and collision:
+                        if (x, y) == self.examined_tile:
+                            self.examined_tile = None
+                            self.hud.examined_tile = None
+
                         self.world[x][y]["tile"] = ""
                         self.world[x][y]["collision"] = False
                 else:
@@ -131,12 +137,13 @@ class World:
 
             render_pos = self.temp_tile["render_pos"]
 
-            dest_x = render_pos[0] + grass_width / 2 + scroll_x
+            dest_x = render_pos[0] + grass_width / 2 + scroll_x + 32
             dest_y = (
                 render_pos[1]
                 - self.temp_tile["image"].get_height()
                 + TILE_SIZE
                 + scroll_y
+                - 10
             )
             screen.blit(self.temp_tile["image"], (dest_x, dest_y))
 
